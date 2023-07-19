@@ -1,24 +1,47 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" *ngIf="!scanActive">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button auto-hide="false"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Blank
+      Pagamentos
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header collapse="condense" *ngIf="!scanActive">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Pagamentos</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer"
-        href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div class="ion-margin" id="container" *ngIf="!scanActive">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Títulos a Pagar</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        Ler código de barras da nota fiscal
+      </ion-card-content>
+
+      <ion-button fill="clear" (click)="startScan()">
+        <ion-icon name="scan-outline" slot="start"></ion-icon>
+        Escanear
+      </ion-button>
+    </ion-card>
+
+    <ion-text color="secondary" *ngIf="!scanActive">
+      <h3 class="ion-text-center">{{result}}</h3>
+    </ion-text>
   </div>
+  <!-- Só aparece quando o escaner estiver ativo -->
+  <div class="box scan-box" *ngIf="scanActive"></div>
+  <ion-button class="stop-button" color="secondary" shape="round"
+    *ngIf="scanActive"
+    (click)="stopScan()">
+    <ion-icon name="stop-outline" slot="start"></ion-icon>
+    Parar
+  </ion-button>
 </ion-content>

@@ -1,27 +1,57 @@
-#container {
-  text-align: center;
 
+#container {
   position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
+  top: 20%;
   transform: translateY(-50%);
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+
+.scan-box {
+  /*border: 2px solid #fff;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+  content: '';
+  display: block;*/
+  left: 50%;
+  //right: 10%;
+  height: 120px;
+  position: absolute;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 80%;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.stop-button {
+  position: absolute;
+    left: 50%;
+    right: 0;
+    top: 70%;
+    width: 30%;
+    height: 50px;
+    transform: translate(-50%,-50%);
 }
 
-#container a {
-  text-decoration: none;
+
+.box {
+  --b: 4px;
+  /* thickness of the border */
+  --c: #fff;
+  /* color of the border */
+  --w: 40px;
+  /* width of border */
+
+
+  border: var(--b) solid #0000;
+  /* space for the border */
+  --_g: #0000 90deg, var(--c) 0;
+  --_p: var(--w) var(--w) border-box no-repeat;
+  background:
+    conic-gradient(from 90deg at top var(--b) left var(--b), var(--_g)) 0 0 / var(--_p),
+    conic-gradient(from 180deg at top var(--b) right var(--b), var(--_g)) 100% 0 / var(--_p),
+    conic-gradient(from 0deg at bottom var(--b) left var(--b), var(--_g)) 0 100% / var(--_p),
+    conic-gradient(from -90deg at bottom var(--b) right var(--b), var(--_g)) 100% 100% / var(--_p);
+
+  /*Irrelevant code*/
+
 }
