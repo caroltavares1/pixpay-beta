@@ -3,13 +3,14 @@ import { IonicModule, AlertController } from '@ionic/angular';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { CommonModule } from '@angular/common';
+import { ContasComponent } from '../contas/contas.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, ContasComponent],
   providers: [ScreenOrientation]
 })
 export class HomePage implements OnDestroy {
