@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ContasAReceberService } from '../services/contas-areceber.service';
-import { IonicModule, Platform } from '@ionic/angular';
+import { IonicModule, Platform, AlertController } from '@ionic/angular';
 import { ContasReceber } from '../services/contas-receber.model';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contas',
@@ -17,8 +18,14 @@ export class ContasComponent implements OnInit {
 
   contasreceber: ContasReceber[]
   plataform = ''
+  mostrarQRCode = false
 
-  constructor(private contasAreceber: ContasAReceberService, private platform: Platform) { }
+  constructor(
+    private contasAreceber: ContasAReceberService,
+    private platform: Platform,
+    private alertController: AlertController,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -41,13 +48,14 @@ export class ContasComponent implements OnInit {
     console.log('Nota Fiscal', this.notaFiscal)
 
 
-    this.contasAreceber.getUser('01', /* '83800000001577900110019166310101016117428313' */this.notaFiscal).subscribe({
+    this.contasAreceber.getUser('01', '83800000001577900110019166310101016117428313' /* this.notaFiscal */).subscribe({
       next: (v: any) => {
 
         this.contasreceber = v
         this.contasreceber.forEach(element => {
           console.log("data", element.dtVenc)
           element.dtVenc = this.converteData(element.dtVenc)
+          element.cgc = this.formataCNPJ(element.cgc)
           return element
         });
         console.log(v)
@@ -72,6 +80,41 @@ export class ContasComponent implements OnInit {
     }
     return dateObject
   }
+
+  private formataCNPJ(cnpj: string): string {
+    //'12.103.781/0001-29'
+    if (cnpj.length < 14) {
+      return cnpj
+    } else {
+      return (cnpj.substring(0, 2)) + '.' + cnpj.substring(2, 5) + '.' + cnpj.substring(5, 8) + '/' + cnpj.substring(8, 12) + '-' + cnpj.substring(12)
+    }
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Criar Cobrança',
+      //subHeader: 'Gerar QR Code',
+      message: 'Tem certeza de que deseja gerar o QR Code de cobrança?',
+      buttons: [
+        {
+          text: 'Sim',
+          handler: () => {
+            this.mostrarQRCode = true
+            this.router.navigate(['cobranca'])
+          }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        }
+
+      ],
+    });
+
+    await alert.present();
+  }
+
+
 
   trackItems(index: number, itemObject: any) {
     return itemObject.id;

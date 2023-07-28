@@ -10,4 +10,8 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'cobranca',
+    loadComponent: () => import('./cobranca/cobranca.component').then((m) => m.CobrancaComponent),
+  }
 ];

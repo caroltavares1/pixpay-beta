@@ -1,25 +1,17 @@
-<ion-grid [fixed]="true" *ngIf="contasreceber != null">
-  <ion-row class="ion-justify-content-around">
-    <ion-col *ngFor="let conta of contasreceber; trackBy:trackItems">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title></ion-card-title>
-          <ion-card-subtitle>Cliente: {{conta.cliente}}</ion-card-subtitle>
-        </ion-card-header>
+<ion-grid *ngIf="contasreceber != null">
+  <ion-row>
+    <ion-col padding
+      *ngFor="let conta of contasreceber; trackBy:trackItems"
+      size="12">
+      <ion-item button detail="true" (click)="presentAlert()">
+        <ion-label>
+          <h3>Cliente: {{conta.cliente}}</h3>
+          <p>Valor: R${{conta.valor}},00</p>
+          <p>Data de Vencimento: {{conta.dtVenc | date}}</p>
+          <p>CNPJ: {{conta.cgc}}</p>
+        </ion-label>
+      </ion-item>
 
-        <ion-card-content>
-          <ion-item>
-            <ion-label>Valor: {{conta.valor}}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>Data de Vencimento: {{conta.dtVenc | date}}
-            </ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>CNPJ: {{conta.cgc}}</ion-label>
-          </ion-item>
-        </ion-card-content>
-      </ion-card>
     </ion-col>
   </ion-row>
 </ion-grid>

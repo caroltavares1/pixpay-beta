@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Cobrança
+    </ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-card id="container">
+    <ion-card-header>
+      <ion-card-subtitle>
+        Mostre o QR Code na sua tela para o pagador
+      </ion-card-subtitle>
+
+    </ion-card-header>
+    <qrcode
+      [qrdata]="'teste00020101021226770014BR.GOV.BCB.PIX2555api.itau/pix/qr/v2/677bc9ae-c742-417b-a500-6c60c46c9ca55204000053039865802BR5925IFOOD.COM AGENCIA DE REST6009SAO PAULO62070503***63044D89'"
+      [width]="256"
+      [errorCorrectionLevel]="'L'"></qrcode>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>
+          <p>Valor a ser pago </p>
+          <h1>R$ 225,00</h1>
+          <p>Para CLIENTE</p>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

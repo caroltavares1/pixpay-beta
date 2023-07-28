@@ -4,13 +4,15 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { CommonModule } from '@angular/common';
 import { ContasComponent } from '../contas/contas.component';
+import { CobrancaComponent } from '../cobranca/cobranca.component';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ContasComponent],
+  imports: [IonicModule, CommonModule, ContasComponent, CobrancaComponent],
   providers: [ScreenOrientation]
 })
 export class HomePage implements OnDestroy {

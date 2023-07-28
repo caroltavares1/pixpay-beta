@@ -11,12 +11,12 @@
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense" *ngIf="!scanActive">
-    <ion-toolbar>
+    <ion-toolbar color="tertiary">
       <ion-title size="large">Contas a Receber</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div class="ion-margin" *ngIf="!scanActive">
+  <div class="ion-margin-bottom" *ngIf="!scanActive">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Títulos a receber</ion-card-title>
@@ -39,7 +39,7 @@
     </ion-text>
   </div>
   <!--  *ngIf="!scanActive && result != null"  -->
-  <app-contas *ngIf="!scanActive && result != null" [notaFiscal]="result"></app-contas>
+  <app-contas [notaFiscal]="result"></app-contas>
   <!-- Só aparece quando o escaner estiver ativo -->
   <div class="box scan-box" *ngIf="scanActive"></div>
   <ion-button class="stop-button" color="secondary" shape="round"
