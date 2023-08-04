@@ -1,96 +1,83 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ContasAReceberService } from '../services/contas-areceber.service';
-import { IonicModule, Platform, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { ContasReceber } from '../services/contas-receber.model';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UtilService } from '../services/util.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-contas',
   templateUrl: './contas.component.html',
   styleUrls: ['./contas.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule],
+  providers: [ScreenOrientation]
 })
-export class ContasComponent implements OnInit {
+export class ContasComponent implements OnInit, OnDestroy {
 
-  @Input() notaFiscal: string
-
+  notaFiscal: any
+  scanActive = false
+  allowScan = ''
+  isToastOpen = false
   contasreceber: ContasReceber[]
   plataform = ''
-  mostrarQRCode = false
 
   constructor(
     private contasAreceber: ContasAReceberService,
-    private platform: Platform,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private util: UtilService,
+    private screenOrientation: ScreenOrientation
   ) { }
 
   ngOnInit() {
-    this.platform.ready().then(() => {
-      if (this.platform.is('android')) {
-        this.plataform = 'android'
-        console.log('android');
-      } else if (this.platform.is('ios')) {
-        this.plataform = 'ios'
-        console.log('ios');
-      } else if (this.platform.is('desktop')) {
-        this.plataform = 'desktop'
-        //fallback to browser APIs or
-        console.log('Desktop');
-      } else {
-        //fallback to browser APIs or
-        console.log('The platform is not supported');
+    this.route.queryParams.subscribe((params) => {
+      this.allowScan = params['scan']
+    })
+    if (this.allowScan == "allowed") {
+      this.scanActive = true
+      this.startScan()
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopScan()
+  }
+
+  mostrarContasReceber(notaFiscal: string) {
+    this.contasAreceber.getUser('01', /* '83800000001577900110019166310101016117428313' */ notaFiscal).subscribe({
+      next: (v: ContasReceber[]) => {
+        if (v != null) {
+          this.contasreceber = v
+          this.contasreceber.forEach(element => {
+            console.log("data", element.dtVenc)
+            element.dtVenc = this.util.converteData(element.dtVenc)
+            element.cgc = this.util.formataCNPJ(element.cgc)
+            return element
+          });
+        } else {
+          this.setOpen(true)
+          console.log("Nota fiscal não encontrada")
+          setTimeout(() => {
+            this.router.navigate(['home'])
+          }, 3000);
+        }
+      },
+      error: (err: any) => {
+        this.setOpen(true)
+        console.log("Nota fiscal não encontrada")
+        this.router.navigate(['home'])
       }
     })
 
-    console.log('Nota Fiscal', this.notaFiscal)
-
-
-    this.contasAreceber.getUser('01', '83800000001577900110019166310101016117428313' /* this.notaFiscal */).subscribe({
-      next: (v: any) => {
-
-        this.contasreceber = v
-        this.contasreceber.forEach(element => {
-          console.log("data", element.dtVenc)
-          element.dtVenc = this.converteData(element.dtVenc)
-          element.cgc = this.formataCNPJ(element.cgc)
-          return element
-        });
-        console.log(v)
-      }
-    })
   }
 
-  converteData(data: string) {
-    let dateObject
-    let dateParts = data.split("/");
-    if (dateParts[2].length == 2) {
-      dateParts[2] = "20" + dateParts[2]
-    }
-    // month is 0-based, that's why we need dataParts[1] - 1
-    //new Date(year, month, day)
-    //Android retorna o string da data na forma "MM/DD/AA" enquanto o browser retorna "DD/MM/AA"
-    //Então as duas formas precisam ser consideradas.
-    if (this.plataform == 'android') {
-      dateObject = new Date(+dateParts[2], +dateParts[0] - 1, (Number(dateParts[1]))).toISOString().slice(0, 10);
-    } else {
-      dateObject = new Date(+dateParts[2], (Number(dateParts[1]) - 1), +dateParts[0]).toISOString().slice(0, 10);
-    }
-    return dateObject
-  }
-
-  private formataCNPJ(cnpj: string): string {
-    //'12.103.781/0001-29'
-    if (cnpj.length < 14) {
-      return cnpj
-    } else {
-      return (cnpj.substring(0, 2)) + '.' + cnpj.substring(2, 5) + '.' + cnpj.substring(5, 8) + '/' + cnpj.substring(8, 12) + '-' + cnpj.substring(12)
-    }
-  }
-
-  async presentAlert() {
+  async presentAlertQRCode() {
     const alert = await this.alertController.create({
       header: 'Criar Cobrança',
       //subHeader: 'Gerar QR Code',
@@ -99,7 +86,6 @@ export class ContasComponent implements OnInit {
         {
           text: 'Sim',
           handler: () => {
-            this.mostrarQRCode = true
             this.router.navigate(['cobranca'])
           }
         },
@@ -114,7 +100,75 @@ export class ContasComponent implements OnInit {
     await alert.present();
   }
 
+  async startScan() {
 
+    // Check camera permission
+    // This is just a simple example, check out the better checks below
+    const status = await BarcodeScanner.checkPermission({ force: true });
+    console.log("Testando")
+    if (status.granted) {
+      this.scanActive = true
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE);
+      document.querySelector('body')?.classList.add('scanner-active')
+      // make background of WebView transparent
+      // note: if you are using ionic this might not be enough, check below
+      BarcodeScanner.hideBackground();
+
+      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+
+      // if the result has content
+      if (result.hasContent) {
+        console.log(result.content); // log the raw scanned content
+        this.notaFiscal = result.content
+        this.screenOrientation.unlock();
+        this.scanActive = false
+        document.querySelector('body')?.classList.remove('scanner-active');
+        this.mostrarContasReceber(this.notaFiscal)
+
+      }
+    } else {
+      await this.presentAlert()
+    }
+
+  }
+
+  async presentAlert(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Permissão Negada',
+      message: 'Por favor conceda permissão de câmera para usar o scanner.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            this.router.navigate(['home'])
+          }
+        },
+        {
+          text: 'Abrir configurações do app',
+          handler: () => {
+            this.router.navigate(['home'])
+            BarcodeScanner.openAppSettings()
+          }
+        }
+      ],
+    });
+    await alert.present();
+  }
+
+  async stopScan() {
+    BarcodeScanner.showBackground();
+    BarcodeScanner.stopScan();
+    this.screenOrientation.unlock();
+    this.scanActive = false
+    document.querySelector('body')?.classList.remove('scanner-active');
+    this.router.navigate(['home'])
+  }
+
+
+  setOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
+  }
 
   trackItems(index: number, itemObject: any) {
     return itemObject.id;

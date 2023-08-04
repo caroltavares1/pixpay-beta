@@ -1,4 +1,4 @@
-<ion-header [translucent]="true" *ngIf="!scanActive">
+<ion-header [translucent]="true">
   <ion-toolbar color="tertiary">
     <ion-buttons slot="start">
       <ion-menu-button auto-hide="false"></ion-menu-button>
@@ -10,14 +10,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense" *ngIf="!scanActive">
+  <ion-header collapse="condense">
     <ion-toolbar color="tertiary">
       <ion-title size="large">Contas a Receber</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div class="ion-margin-bottom" *ngIf="!scanActive">
-    <ion-card>
+  <div class="ion-text-center">
+    <ion-card class="card">
       <ion-card-header>
         <ion-card-title>Títulos a receber</ion-card-title>
       </ion-card-header>
@@ -26,27 +26,11 @@
         Ler código de barras da nota fiscal
       </ion-card-content>
 
-      <ion-button fill="clear" (click)="startScan()">
+      <ion-button fill="clear" color="primary" (click)="scan()">
         <ion-icon name="scan-outline" slot="start"></ion-icon>
         Escanear
       </ion-button>
     </ion-card>
-
-    <ion-text *ngIf="!scanActive && result != null" color="dark">
-      <p class="ion-text-center">Mostrando
-        títulos com a
-        nota fiscal: {{result}}</p>
-    </ion-text>
   </div>
-  <!--  *ngIf="!scanActive && result != null"  -->
-  <app-contas [notaFiscal]="result"></app-contas>
-  <!-- Só aparece quando o escaner estiver ativo -->
-  <div class="box scan-box" *ngIf="scanActive"></div>
-  <ion-button class="stop-button" color="secondary" shape="round"
-    *ngIf="scanActive"
-    (click)="stopScan()">
-    <ion-icon name="stop-outline" slot="start"></ion-icon>
-    Parar
-  </ion-button>
 
 </ion-content>

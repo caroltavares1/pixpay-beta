@@ -1,17 +1,57 @@
-<ion-grid *ngIf="contasreceber != null">
-  <ion-row>
-    <ion-col padding
-      *ngFor="let conta of contasreceber; trackBy:trackItems"
-      size="12">
-      <ion-item button detail="true" (click)="presentAlert()">
-        <ion-label>
-          <h3>Cliente: {{conta.cliente}}</h3>
-          <p>Valor: R${{conta.valor}},00</p>
-          <p>Data de Vencimento: {{conta.dtVenc | date}}</p>
-          <p>CNPJ: {{conta.cgc}}</p>
-        </ion-label>
-      </ion-item>
+<ion-header>
+  <ion-toolbar color="tertiary" *ngIf="contasreceber != null">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Contas a Receber
+    </ion-title>
+  </ion-toolbar>
 
-    </ion-col>
-  </ion-row>
-</ion-grid>
+</ion-header>
+<ion-content>
+  <div *ngIf="contasreceber != null">
+    <ion-item>
+      <ion-label>
+        <ion-text color="medium"><i>
+            <h2>Títulos em aberto com a nota fiscal: </h2>
+            <p>{{notaFiscal}}</p>
+          </i></ion-text>
+      </ion-label>
+    </ion-item>
+  </div>
+  <ion-grid *ngIf="contasreceber != null">
+    <ion-row>
+      <ion-col padding
+        *ngFor="let conta of contasreceber; trackBy:trackItems"
+        size="12">
+        <ion-item button detail="true" (click)="presentAlertQRCode()">
+          <ion-label>
+            <h3>Cliente: {{conta.cliente}}</h3>
+            <p>Valor: R${{conta.valor}},00</p>
+            <p>Data de Vencimento: {{conta.dtVenc | date}}</p>
+            <p>CNPJ: {{conta.cgc}}</p>
+          </ion-label>
+        </ion-item>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Só aparece quando o escaner estiver ativo -->
+  <div class="box scan-box" *ngIf="scanActive"></div>
+  <ion-button class="stop-button" color="secondary" shape="round"
+    *ngIf="scanActive"
+    (click)="stopScan()">
+    <ion-icon name="stop-outline" slot="start"></ion-icon>
+    Parar
+  </ion-button>
+
+  <!-- Alerta caso a nota fiscal não tenha sido encontrada na base -->
+  <ion-toast
+    [isOpen]="isToastOpen"
+    message="Nota Fiscal não encontrada!"
+    [duration]="3000"
+    color="danger"
+    position="middle"
+    (didDismiss)="setOpen(false)"></ion-toast>
+</ion-content>
