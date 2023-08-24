@@ -1,16 +1,28 @@
 import { CanMatchFn, Router, Routes } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { inject } from '@angular/core';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 const authGuard: CanMatchFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.IsAuthenticated) {
-    router.navigate(['/auth'])
-  }
-
-  return authService.IsAuthenticated;
+  return authService.userIsAuthenticated.pipe(
+    take(1),
+    switchMap(isAuthenticated => {
+      if (!isAuthenticated) {
+        return authService.autoLogin();
+      } else {
+        return of(isAuthenticated);
+      }
+    }),
+    tap(isAuthenticated => {
+      if (!isAuthenticated) {
+        router.navigateByUrl('/auth');
+      }
+    })
+  );
 }
 
 export const routes: Routes = [

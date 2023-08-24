@@ -4,5 +4,8 @@ export const environment = {
   apiURL: 'http://192.168.1.11:8084/rest',
   //apiURL: 'http://192.168.41.60:8090/rest',
   //authorization: "Basic " + btoa("saulomaciel:17072610")
-  authorization: "Basic " + btoa("admin:123")
+  authorization: "Basic " + btoa("admin:123"),
+  firebaseConfig: {
+    apiKey: "AIzaSyB7MaHMQIs4bM2we5Vnz61lEd38pCmDrvw",
+  }
 };

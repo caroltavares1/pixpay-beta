@@ -6,3 +6,17 @@
     transform: translateY(-50%);
     text-align: center;
 }
+
+/* ion-input.custom {
+    --background: #fff;
+    --color: black;
+} */
+ion-content {
+    //--background: #ffffff url('../../assets/jupiter.jpg') no-repeat center center / cover !important;
+    --background: #fff;
+}
+
+ion-button {
+    --background: #e95e28;
+    --color: #fff
+}

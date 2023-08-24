@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { IonicModule, LoadingController } from '@ionic/angular';
-import { AuthService } from './auth.service';
+import { AlertController, IonicModule, LoadingController } from '@ionic/angular';
+import { AuthService, AuthResponseData } from './auth.service';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
@@ -19,28 +20,41 @@ export class AuthPage implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private alertController: AlertController,
     private loadingCtrl: LoadingController
   ) { }
 
   ngOnInit() {
+    console.log('init')
   }
 
-  login() {
-    this.authService.login()
-    this.router.navigateByUrl('/home')
-    console.log(this.authService.IsAuthenticated)
-
+  authenticate(email: string, password: string) {
     this.isLoading = true;
-    this.authService.login();
     this.loadingCtrl
       .create({ keyboardClose: true, })
       .then(loadingEl => {
         loadingEl.present();
-        setTimeout(() => {
-          this.isLoading = false;
-          loadingEl.dismiss();
-          this.router.navigateByUrl('/home');
-        }, 1500);
+        let auth: Observable<AuthResponseData>
+        if (this.isLogin) {
+          auth = this.authService.signin(email, password)
+        } else {
+          auth = this.authService.signup(email, password)
+        }
+        auth.subscribe({
+          next: (data => {
+            this.isLoading = false;
+            loadingEl.dismiss();
+            this.router.navigateByUrl('/home');
+            console.log(data)
+          }),
+          error: (err => {
+            loadingEl.dismiss()
+            let code = err.error.error.message
+            this.handleError(code)
+          })
+        }
+
+        )
       });
 
   }
@@ -57,11 +71,37 @@ export class AuthPage implements OnInit {
     const password = form.value.password;
     console.log(email, password);
 
-    if (this.isLogin) {
-      // Send a request to login servers
+    this.authenticate(email, password)
+  }
+
+
+  private handleError(code: string) {
+    if (code === "EMAIL_EXISTS") {
+      let message = "Email informado já foi cadastrado!"
+      this.showAlert(message)
+    } else if (code === "INVALID_PASSWORD") {
+      let message = "A senha é inválida ou o usuário não possui senha."
+      this.showAlert(message)
+    } else if (code === "EMAIL_NOT_FOUND") {
+      let message = "Não há registro de usuário correspondente a este identificador. O usuário pode ter sido excluído."
+      this.showAlert(message)
+    } else if (code === "TOO_MANY_ATTEMPTS_TRY_LATER") {
+      let message = "bloqueamos todas as solicitações deste dispositivo devido a atividades incomuns. Tente mais tarde."
+      this.showAlert(message)
     } else {
-      // Send a request to signup servers
+      let message = `Houve um erro inesperado: ${code}`
+      this.showAlert(message)
     }
+
+  }
+
+  private showAlert(message: string) {
+    this.alertController.create({
+      header: 'Autenticação não concluída',
+      message: message,
+      buttons: ['OK']
+    }).then(alert => alert.present())
+
   }
 
 
