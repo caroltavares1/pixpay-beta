@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class AuthPage implements OnInit {
   isLoading = false;
@@ -73,6 +73,7 @@ export class AuthPage implements OnInit {
 
     this.authenticate(email, password)
   }
+
 
 
   private handleError(code: string) {

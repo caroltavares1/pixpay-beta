@@ -12,8 +12,9 @@ export const environment = {
   firebaseConfig: {
     apiKey: "AIzaSyB7MaHMQIs4bM2we5Vnz61lEd38pCmDrvw",
     signupURL: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=",
-    singinURL: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
-  }
+    singinURL: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=",
+    refreshTokenURL: "https://securetoken.googleapis.com/v1/token?key="
+  },
 };
 
 /*
