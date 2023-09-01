@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, LoadingController } from '@ionic/angular';
 import { AuthService } from './auth/auth.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -15,7 +15,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription
   private previousAuthState = false
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private loadingCtrl: LoadingController
+
+  ) { }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.userIsAuthenticated.subscribe(isAuth => {
@@ -33,6 +38,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout()
+    this.loadingCtrl.create({ keyboardClose: true })
+      .then((loadingEl) => {
+        loadingEl.present()
+        setTimeout(() => {
+          loadingEl.dismiss()
+          this.authService.logout()
+        }, 1000);
+
+
+      })
   }
 }

@@ -25,7 +25,6 @@ export class AuthPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('init')
   }
 
   authenticate(email: string, password: string) {
@@ -53,10 +52,8 @@ export class AuthPage implements OnInit {
             this.handleError(code)
           })
         }
-
         )
       });
-
   }
 
   onSwitchAuthMode() {
@@ -70,6 +67,7 @@ export class AuthPage implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
     console.log(email, password);
+    form.reset()
 
     this.authenticate(email, password)
   }
