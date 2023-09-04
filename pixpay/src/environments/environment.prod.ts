@@ -10,5 +10,14 @@ export const environment = {
     signupURL: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=",
     singinURL: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=",
     refreshTokenURL: "https://securetoken.googleapis.com/v1/token?key="
+  },
+  firebase: {
+    apiKey: "AIzaSyB7MaHMQIs4bM2we5Vnz61lEd38pCmDrvw",
+    authDomain: "pixpay-19727.firebaseapp.com",
+    projectId: "pixpay-19727",
+    storageBucket: "pixpay-19727.appspot.com",
+    messagingSenderId: "543299304531",
+    appId: "1:543299304531:web:274807177d28a8e5f19aa6",
+    measurementId: "G-WXCN7FV3X7"
   }
 };
