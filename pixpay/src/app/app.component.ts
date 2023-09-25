@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IonicModule, LoadingController } from '@ionic/angular';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -23,30 +23,27 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.userIsAuthenticated.subscribe(isAuth => {
-      if (!isAuth && this.previousAuthState !== isAuth) {
-        this.router.navigateByUrl('/auth')
-      }
-      this.previousAuthState = isAuth
-    })
+    /*   this.authSubscription = this.authService.userIsAuthenticated.subscribe(isAuth => {
+        if (!isAuth && this.previousAuthState !== isAuth) {
+          this.router.navigateByUrl('/auth')
+        }
+        this.previousAuthState = isAuth
+      }) */
   }
 
   ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe()
-    }
+    /*  if (this.authSubscription) {
+       this.authSubscription.unsubscribe()
+     } */
   }
 
-  logout() {
-    this.loadingCtrl.create({ keyboardClose: true })
-      .then((loadingEl) => {
-        loadingEl.present()
-        setTimeout(() => {
-          loadingEl.dismiss()
-          this.authService.logout()
-        }, 1000);
+  async logout() {
+    const loading = await this.loadingCtrl.create();
+    await loading.present();
 
+    await this.authService.logout();
+    await loading.dismiss();
+    this.router.navigateByUrl('/', { replaceUrl: true });
 
-      })
   }
 }

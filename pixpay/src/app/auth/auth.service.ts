@@ -36,16 +36,12 @@ export class AuthService implements OnDestroy {
     return this._user.asObservable().pipe(
       map(user => {
         if (user) {
-          console.log(user)
           return !!user.token; //retorna true se houver um token registrado
         } else {
           return false;
         }
       })
     );
-  }
-  get userRefreshToken() {
-    return this._user.getValue()
   }
 
   constructor(private http: HttpClient) { }
@@ -71,13 +67,13 @@ export class AuthService implements OnDestroy {
     ).pipe(tap(this.setUserData.bind(this)));
   }
 
-  /*   refreshToken(refreshToken: string) {
-      return this.http.post<RefreshResponseData>(environment.firebaseConfig.refreshTokenURL + this._apiKey,
-        { grant_type: 'refresh_token', refresh_token: refreshToken }).subscribe(res => {
-          console.log(res)
-        })
-
-    } */
+  /*     refreshToken(idToken: string) {
+        return this.http.post<RefreshResponseData>(environment.firebaseConfig.refreshTokenURL + this._apiKey,
+          { grant_type: 'refresh_token', refresh_token: idToken }).subscribe(res => {
+            console.log(res)
+          })
+  
+      } */
 
   logout() {
     this._user.next(null!)

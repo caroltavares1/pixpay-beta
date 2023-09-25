@@ -37,7 +37,7 @@
     "angularx-qrcode": "^16.0.0",
     "cordova-plugin-screen-orientation": "^3.0.3",
     "es6-promise-plugin": "^4.2.2",
-    "firebase": "^10.1.0",
+    "firebase": "^10.4.0",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

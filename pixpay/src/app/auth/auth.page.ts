@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AlertController, IonicModule, LoadingController } from '@ionic/angular';
-import { AuthService, AuthResponseData } from './auth.service';
+//import { AuthService, AuthResponseData } from './auth.service';
+import { AuthService } from '../services/auth.service'
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { log } from 'console';
 
 @Component({
   selector: 'app-auth',
@@ -26,38 +28,54 @@ export class AuthPage implements OnInit {
 
   ngOnInit() {
   }
-
-  authenticate(email: string, password: string) {
-    this.isLoading = true;
-    this.loadingCtrl
-      .create({ keyboardClose: true, })
-      .then(loadingEl => {
-        loadingEl.present();
-        let auth: Observable<AuthResponseData>
-        if (this.isLogin) {
-          auth = this.authService.signin(email, password)
-        } else {
-          auth = this.authService.signup(email, password)
-        }
-        auth.subscribe({
-          next: (data => {
-            this.isLoading = false;
-            loadingEl.dismiss();
-            this.router.navigateByUrl('/home');
-            console.log(data)
-          }),
-          error: (err => {
-            loadingEl.dismiss()
-            let code = err.error.error.message
-            this.handleError(code)
-          })
-        }
-        )
-      });
-  }
+  /* 
+    authenticate(email: string, password: string) {
+      this.isLoading = true;
+      this.loadingCtrl
+        .create({ keyboardClose: true, })
+        .then(loadingEl => {
+          loadingEl.present();
+          let auth: Observable<AuthResponseData>
+          if (this.isLogin) {
+            auth = this.authService.signin(email, password)
+          } else {
+            auth = this.authService.signup(email, password)
+          }
+          auth.subscribe({
+            next: (data => {
+              this.isLoading = false;
+              loadingEl.dismiss();
+              this.router.navigateByUrl('/home');
+              console.table(data)
+            }),
+            error: (err => {
+              loadingEl.dismiss()
+              let code = err.error.error.message
+              this.handleError(code)
+            })
+          }
+          )
+        });
+    } */
 
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
+  }
+
+  async login(email: string, password: string) {
+    const loading = await this.loadingCtrl.create();
+    await loading.present();
+
+    const user = await this.authService.login(email, password);
+    await loading.dismiss();
+
+
+    if (user) {
+      console.log(user);
+      this.router.navigateByUrl('/home');
+    } else {
+      this.showAlert('Tente Novamente');
+    }
   }
 
   onSubmit(form: NgForm) {
@@ -69,7 +87,7 @@ export class AuthPage implements OnInit {
     console.log(email, password);
     form.reset()
 
-    this.authenticate(email, password)
+    this.login(email, password)
   }
 
 

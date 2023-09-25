@@ -9,6 +9,10 @@ import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { provideServiceWorker } from '@angular/service-worker';
 
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+//import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+
 if (environment.production) {
   enableProdMode();
 }
@@ -16,7 +20,10 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    importProvidersFrom(IonicModule.forRoot({}), HttpClientModule),
+    importProvidersFrom(IonicModule.forRoot({}), HttpClientModule,
+      provideFirebaseApp(() => initializeApp(environment.firebase)),
+      provideAuth(() => getAuth())),
+    //provideFirestore(() => getFirestore())),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
