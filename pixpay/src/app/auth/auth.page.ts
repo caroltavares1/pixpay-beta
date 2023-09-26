@@ -31,30 +31,29 @@ export class AuthPage {
     const loading = await this.loadingCtrl.create();
     await loading.present();
 
-    const user = await this.authService.register(email, password);
-    await loading.dismiss();
-
-    if (user) {
+    try {
+      const user = await this.authService.register(email, password);
+      console.log(user);
       this.router.navigateByUrl('/home');
-    } else {
-      this.showAlert('Tente Novamente');
+    } catch (error: any) {
+      this.handleError(error.code)
     }
+    await loading.dismiss();
   }
 
   async login(email: string, password: string) {
     const loading = await this.loadingCtrl.create();
     await loading.present();
 
-    const user = await this.authService.login(email, password);
-    await loading.dismiss();
-
-
-    if (user) {
+    try {
+      const user = await this.authService.login(email, password);
       console.log(user);
       this.router.navigateByUrl('/home');
-    } else {
-      this.showAlert('Tente Novamente');
+    } catch (error: any) {
+      this.handleError(error.code)
     }
+    await loading.dismiss();
+
   }
 
   onSubmit(form: NgForm) {
@@ -72,17 +71,14 @@ export class AuthPage {
 
 
   private handleError(code: string) {
-    if (code === "EMAIL_EXISTS") {
+    if (code === "auth/email-already-in-use") {
       let message = "Email informado já foi cadastrado!"
       this.showAlert(message)
-    } else if (code === "INVALID_PASSWORD") {
+    } else if (code === "auth/wrong-password") {
       let message = "A senha é inválida ou o usuário não possui senha."
       this.showAlert(message)
-    } else if (code === "EMAIL_NOT_FOUND") {
+    } else if (code === "auth/user-not-found") {
       let message = "Não há registro de usuário correspondente a este identificador. O usuário pode ter sido excluído."
-      this.showAlert(message)
-    } else if (code === "TOO_MANY_ATTEMPTS_TRY_LATER") {
-      let message = "bloqueamos todas as solicitações deste dispositivo devido a atividades incomuns. Tente mais tarde."
       this.showAlert(message)
     } else {
       let message = `Houve um erro inesperado: ${code}`

@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, from, map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Preferences } from '@capacitor/preferences';
-import { User } from './user.model';
+import { User } from '../models/user.model';
 
 export interface AuthResponseData {
   idToken: string, // Um token de ID de autenticação do Firebase para o usuário recém-criado.

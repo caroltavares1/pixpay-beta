@@ -24,13 +24,16 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    try {
+
+    return await signInWithEmailAndPassword(this.auth, email, password);
+
+    /* try {
       const user = await signInWithEmailAndPassword(this.auth, email, password);
       return user;
-    } catch (e) {
-      console.error(e)
+    } catch (e: any) {
+      console.log(e.code)
       return null;
-    }
+    } */
   }
 
   logout() {
