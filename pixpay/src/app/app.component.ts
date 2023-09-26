@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [IonicModule],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
   private authSubscription: Subscription
   private previousAuthState = false
 
@@ -21,21 +21,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController
 
   ) { }
-
-  ngOnInit(): void {
-    /*   this.authSubscription = this.authService.userIsAuthenticated.subscribe(isAuth => {
-        if (!isAuth && this.previousAuthState !== isAuth) {
-          this.router.navigateByUrl('/auth')
-        }
-        this.previousAuthState = isAuth
-      }) */
-  }
-
-  ngOnDestroy(): void {
-    /*  if (this.authSubscription) {
-       this.authSubscription.unsubscribe()
-     } */
-  }
 
   async logout() {
     const loading = await this.loadingCtrl.create();

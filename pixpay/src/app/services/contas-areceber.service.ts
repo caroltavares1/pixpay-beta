@@ -39,7 +39,7 @@ export class ContasAReceberService {
 
 
     return this.http.get<any>(url, options).pipe(
-      map((resposta: any) => resposta)
+      map((resposta: any) => console.log(resposta))
     );
   }
 }

@@ -7,7 +7,6 @@ import { ContasReceber } from '../services/contas-receber.model';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from '../services/util.service';
-import { error } from 'console';
 
 @Component({
   selector: 'app-contas',

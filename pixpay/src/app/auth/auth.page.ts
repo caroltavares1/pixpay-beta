@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AlertController, IonicModule, LoadingController } from '@ionic/angular';
-//import { AuthService, AuthResponseData } from './auth.service';
 import { AuthService } from '../services/auth.service'
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { log } from 'console';
 
 @Component({
   selector: 'app-auth',
@@ -15,7 +12,7 @@ import { log } from 'console';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
 })
-export class AuthPage implements OnInit {
+export class AuthPage {
   isLoading = false;
   isLogin = true;
 
@@ -26,40 +23,22 @@ export class AuthPage implements OnInit {
     private loadingCtrl: LoadingController
   ) { }
 
-  ngOnInit() {
-  }
-  /* 
-    authenticate(email: string, password: string) {
-      this.isLoading = true;
-      this.loadingCtrl
-        .create({ keyboardClose: true, })
-        .then(loadingEl => {
-          loadingEl.present();
-          let auth: Observable<AuthResponseData>
-          if (this.isLogin) {
-            auth = this.authService.signin(email, password)
-          } else {
-            auth = this.authService.signup(email, password)
-          }
-          auth.subscribe({
-            next: (data => {
-              this.isLoading = false;
-              loadingEl.dismiss();
-              this.router.navigateByUrl('/home');
-              console.table(data)
-            }),
-            error: (err => {
-              loadingEl.dismiss()
-              let code = err.error.error.message
-              this.handleError(code)
-            })
-          }
-          )
-        });
-    } */
-
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
+  }
+
+  async register(email: string, password: string) {
+    const loading = await this.loadingCtrl.create();
+    await loading.present();
+
+    const user = await this.authService.register(email, password);
+    await loading.dismiss();
+
+    if (user) {
+      this.router.navigateByUrl('/home');
+    } else {
+      this.showAlert('Tente Novamente');
+    }
   }
 
   async login(email: string, password: string) {
@@ -87,7 +66,7 @@ export class AuthPage implements OnInit {
     console.log(email, password);
     form.reset()
 
-    this.login(email, password)
+    this.isLogin ? this.login(email, password) : this.register(email, password)
   }
 
 
