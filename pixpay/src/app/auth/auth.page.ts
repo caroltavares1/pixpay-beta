@@ -32,8 +32,7 @@ export class AuthPage {
     await loading.present();
 
     try {
-      const user = await this.authService.register(email, password);
-      console.log(user);
+      await this.authService.register(email, password);
       this.router.navigateByUrl('/home');
     } catch (error: any) {
       this.handleError(error.code)
@@ -46,8 +45,7 @@ export class AuthPage {
     await loading.present();
 
     try {
-      const user = await this.authService.login(email, password);
-      console.log(user);
+      await this.authService.login(email, password);
       this.router.navigateByUrl('/home');
     } catch (error: any) {
       this.handleError(error.code)
