@@ -1,2 +1,3 @@
 # pixpay-beta
-Versão beta de app para pagamento de nota fiscal utilizando o pix.
+Exemplo de app para pagamento de nota fiscal utilizando o pix e Protheus.
+Projeto feito com Angular e Ionic Framework.
